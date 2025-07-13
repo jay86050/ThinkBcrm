@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    container_name: odoo-db
+    restart: always
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_DB: postgres
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    container_name: odoo-web
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    volumes:
+      - ./custom-addons:/opt/odoo/custom-addons
+      - ./odoo.conf:/etc/odoo.conf
+    command: ["/wait-for-it.sh", "db:5432", "--timeout=30", "--", "python3", "odoo-bin", "-c", "/etc/odoo.conf"]
+
+volumes:
+  odoo-db-data:
+    

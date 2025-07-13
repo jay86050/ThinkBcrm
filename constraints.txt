@@ -1,0 +1,3 @@
+gevent==22.10.2
+greenlet==2.0.2
+
